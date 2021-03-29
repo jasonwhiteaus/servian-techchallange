@@ -2,7 +2,7 @@
 
 ## Summary
 
-The provided solution deploys the TechChallengeApp to AWS with a highly available, highly scalable server-less architecture, utilising:
+The provided solution deploys the Servian Tech Challenge App docker image to AWS with a highly available, highly scalable server-less architecture, utilising:
 
 - Multi-AZ RDS Postgres Database
 
