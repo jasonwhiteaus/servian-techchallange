@@ -41,6 +41,7 @@ The provided solution deploys the TechChallengeApp to AWS with a highly availabl
 ├── sg.tf 					# Security Groups 
 ├── variables.tf 			# Variables
 ├── vpc_net.tf 				# VPC-Network
+├── ssm.tf   				# Systems Manage Paramater Store
 ├── images     				# Image Directory
     ├── aws_design.png      # Infrastructure Design
 
