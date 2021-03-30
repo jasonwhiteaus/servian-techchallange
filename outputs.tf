@@ -7,5 +7,3 @@ output "tc_db_password" {
   value = aws_db_instance.tc_rds_db.password
   sensitive = false
 }
-
-

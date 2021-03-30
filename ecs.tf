@@ -35,15 +35,15 @@ resource "aws_ecs_task_definition" "tc_ecs_taskdefinition_serve" {
   network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
-  execution_role_arn = aws_iam_role.tc_ecs_tasks_execution_role.arn
+  execution_role_arn       = aws_iam_role.tc_ecs_tasks_execution_role.arn
   container_definitions = jsonencode([
     {
       name          = "tc-ecs-container-serve"
       image         = "servian/techchallengeapp:latest"
       command       = [ "serve" ]
+      secrets       = [{ "name": "VTT_DBPASSWORD", "valueFrom" : aws_ssm_parameter.tc_ssm_dbpass.arn }]
       environment   =  [
         { "name": "VTT_DBUSER", "value" : var.tc_dbusername },
-        { "name": "VTT_DBPASSWORD", "value" : random_password.password.result },
         { "name": "VTT_DBNAME", "value" : var.tc_dbname },
         { "name": "VTT_DBHOST", "value" : split(":", aws_db_instance.tc_rds_db.endpoint)[0] },
         { "name": "VTT_DBPORT", "value" : split(":", aws_db_instance.tc_rds_db.endpoint)[1] },
@@ -61,15 +61,15 @@ resource "aws_ecs_task_definition" "tc_ecs_taskdefinition_updatedb" {
   network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
-  execution_role_arn = aws_iam_role.tc_ecs_tasks_execution_role.arn
+  execution_role_arn       = aws_iam_role.tc_ecs_tasks_execution_role.arn
   container_definitions = jsonencode([
     {
       name            = "tc-ecs-container-updatedb"
       image           = "servian/techchallengeapp:latest"
+      secrets         = [ { "name": "VTT_DBPASSWORD", "valueFrom" : aws_ssm_parameter.tc_ssm_dbpass.arn } ]
       command         = [ "updatedb", "--skip-create-db" ]
       environment     =  [
         { "name": "VTT_DBUSER", "value" : var.tc_dbusername },
-        { "name": "VTT_DBPASSWORD", "value" : random_password.password.result },
         { "name": "VTT_DBNAME", "value" : var.tc_dbname },
         { "name": "VTT_DBHOST", "value" : split(":", aws_db_instance.tc_rds_db.endpoint)[0] },
         { "name": "VTT_DBPORT", "value" : split(":", aws_db_instance.tc_rds_db.endpoint)[1] },
@@ -99,4 +99,9 @@ resource "aws_iam_role" "tc_ecs_tasks_execution_role" {
 resource "aws_iam_role_policy_attachment" "tc_ecs_tasks_execution_role" {
   role       = aws_iam_role.tc_ecs_tasks_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "tc_ssm_read_only_pol_attach" {
+    role       =  aws_iam_role.tc_ecs_tasks_execution_role.name
+    policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
 }

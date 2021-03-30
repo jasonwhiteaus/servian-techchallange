@@ -21,7 +21,7 @@ resource "aws_db_instance" "tc_rds_db" {
   parameter_group_name    = "default.postgres12"
   name                    = var.tc_dbname
   username                = var.tc_dbusername
-  password                = random_password.password.result
+  password                = aws_ssm_parameter.tc_ssm_dbpass.value
   vpc_security_group_ids  = [aws_security_group.tc_rds_secg.id]
   multi_az                = var.tc_rds_multiazdeployment
   db_subnet_group_name    = aws_db_subnet_group.tc_rds_subnet_grp.id

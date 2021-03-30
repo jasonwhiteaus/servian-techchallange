@@ -13,3 +13,7 @@ variable "tc_dbport" {
 variable "tc_rds_multiazdeployment" {
     default = true
 }
+
+variable "tc_ssm_keylocation" {
+    default = "/tc/database/password/master"
+}
